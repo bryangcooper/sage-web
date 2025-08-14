@@ -1,0 +1,79 @@
+import * as THREE from 'three';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+import { TextureLoader } from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+const textureLoader = new TextureLoader();
+const bodyTexture = textureLoader.load('./Textures/Body-Albedo.png');
+const bodyNormal = textureLoader.load('./Textures/Body-Normal.png');
+const bodyMetalness = textureLoader.load('./Textures/Body-Metalness.png');
+const bodyOcclusion = textureLoader.load('./Textures/Body-Occlusion.png');
+const eyeTexture = textureLoader.load('./Textures/Eye-Albedo.png');
+const eyeEmissive = textureLoader.load('./Textures/Eye-Emissive.png');
+const eyeRoughness = textureLoader.load('./Textures/Eye-Roughness.png');
+// Scene setup
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; // Smooth motion
+controls.dampingFactor = 0.05; // Amount of smoothing
+controls.target.set(0, 1, 0);  // Look at model's center
+
+// Light
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 10, 7.5);
+scene.add(light);
+
+// FBX Loader
+const loader = new FBXLoader();
+
+loader.load(
+  '/Game-character.fbx', // Path to your FBX file
+  (object) => {
+    object.traverse((child) => {
+        if (child.isMesh) {
+            // if (child.name.includes('Body')) {
+            //     child.material = bodyTexture
+            // }
+            // if (child.name.includes('Eye')) {
+            //     child.material = eyeTexture
+            // } else {
+            //     child.material = bodyTexture
+            // }
+            if (child.name.includes('Eyes')) {
+                child.material.map = eyeTexture
+                child.material.emissiveMap = eyeEmissive
+                child.material.roughnessMap = eyeRoughness
+            } else {
+                child.material.map = bodyTexture
+                child.material.normalMap = bodyNormal
+                child.material.metalnessMap = bodyMetalness
+                child.material.occlusionMap = bodyOcclusion
+            }
+            child.material.needsUpdate = true
+        }
+    });
+    scene.add(object);
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+  },
+  (error) => {
+    console.error('An error happened', error);
+  }
+);
+
+// Camera position
+camera.position.set(0, 1, 3);
+
+// Animate
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update(); // important for damping
+  renderer.render(scene, camera);
+}
+animate();
