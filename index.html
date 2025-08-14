@@ -23,13 +23,13 @@
 		import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 		const textureLoader = new TextureLoader();
-		const bodyTexture = textureLoader.load('./Textures/Body-Albedo.png');
-		const bodyNormal = textureLoader.load('./Textures/Body-Normal.png');
-		const bodyMetalness = textureLoader.load('./Textures/Body-Metalness.png');
-		const bodyOcclusion = textureLoader.load('./Textures/Body-Occlusion.png');
-		const eyeTexture = textureLoader.load('./Textures/Eye-Albedo.png');
-		const eyeEmissive = textureLoader.load('./Textures/Eye-Emissive.png');
-		const eyeRoughness = textureLoader.load('./Textures/Eye-Roughness.png');
+		const bodyTexture = textureLoader.load('./public/Textures/Body-Albedo.png');
+		const bodyNormal = textureLoader.load('./public/Textures/Body-Normal.png');
+		const bodyMetalness = textureLoader.load('./public/Textures/Body-Metalness.png');
+		const bodyOcclusion = textureLoader.load('./public/Textures/Body-Occlusion.png');
+		const eyeTexture = textureLoader.load('./public/Textures/Eye-Albedo.png');
+		const eyeEmissive = textureLoader.load('./public/Textures/Eye-Emissive.png');
+		const eyeRoughness = textureLoader.load('./public/Textures/Eye-Roughness.png');
 		// Scene setup
 		const scene = new THREE.Scene();
 		const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -51,7 +51,7 @@
 		const loader = new FBXLoader();
 
 		loader.load(
-		'/Game-character.fbx', // Path to your FBX file
+		'./public/Game-character.fbx', // Path to your FBX file
 		(object) => {
 			object.traverse((child) => {
 				if (child.isMesh) {
